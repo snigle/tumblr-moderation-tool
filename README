@@ -1,4 +1,12 @@
-This is your new Play application
-=================================
+put credentials in the app/controllers/Trumblr object
+  val KEY = ConsumerKey("XXX", "XXX")
+  
 
-This file will be packaged with your application, when using `activator dist`.
+Build with activator : 
+activator compile
+
+Run :
+activator run
+
+Create Package :
+activator dist
