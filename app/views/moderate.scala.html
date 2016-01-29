@@ -1,0 +1,25 @@
+@(posts : List[Post])(implicit flash: Flash)
+
+@main("Propose tes gifs"){
+  @flash.get("error")
+  @flash.get("success")
+
+  @if(posts.length==0){
+    Aucun post n'est en attente de modération :)
+  }
+  <table>
+    @for(i <- 0 to (posts.length-1)) {
+      @defining(posts(i)) { post =>
+        <tr>
+          <!-- <td>#@post.uuid</td> -->
+          <td>@post.author</td>
+          <td>@post.title</td>
+          <td><img style="max-width:500px;max-height:318px" src="@post.url" /></td>
+          <td><a href="/posts/@post.uuid/delete">X</a></td>
+          <td><a href="/posts/@post.uuid/validate">V</a></td>
+        </tr>
+      }
+    }
+
+  </table>
+}

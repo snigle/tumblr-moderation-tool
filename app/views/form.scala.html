@@ -1,0 +1,12 @@
+@()(implicit flash: Flash)
+
+@main("Propose tes gifs"){
+  @flash.get("error")
+  @flash.get("success")
+  <form action="/posts" method="POST">
+    <input name="url" placeholder="Lien du gif"/><br />
+    <input name="title" placeholder="Petite histoire"/><br />
+    <input name="author" placeholder="Le nom de l'artiste"/><br />
+    <input type="submit" value="Envoyer !">
+  </form>
+}
