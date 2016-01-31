@@ -4,7 +4,7 @@ package controllers
 import play.api._
 import play.api.mvc._
 import play.api.libs.oauth._
-
+import com.typesafe.config.ConfigFactory
 
 class Tumblr extends Controller{
 
@@ -33,7 +33,7 @@ class Tumblr extends Controller{
 }
 
 object Tumblr extends Controller {
-  val KEY = ConsumerKey("XXX", "XXX")
+  val KEY = ConsumerKey(ConfigFactory.load().getString("tumblr.app.key"), ConfigFactory.load().getString("tumblr.app.secret"))
 
   val TUMBLR = OAuth(ServiceInfo(
     "https://www.tumblr.com/oauth/request_token",

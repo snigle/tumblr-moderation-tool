@@ -1,6 +1,7 @@
-put credentials in the app/controllers/Trumblr object
-  val KEY = ConsumerKey("XXX", "XXX")
-  
+put credentials in the conf/application.conf
+tumblr.app.key = "XXXX"
+tumblr.app.secret = "XXXX"
+tumblr.app.admin = "foo@bar.com"  
 
 Build with activator : 
 activator compile

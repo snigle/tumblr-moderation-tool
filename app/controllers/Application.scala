@@ -12,6 +12,9 @@ import akka.pattern._
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.util.UUID
+import play.api.Play.current
+import play.api.Mode
+import play.api.libs.oauth._
 
 import actors._
 import models._
@@ -35,13 +38,34 @@ class Application @Inject() (system: ActorSystem, ws : WSClient) extends Control
       case _ => Future.successful(Redirect(routes.Tumblr.authenticate))
   }}
 
-  def validate(uuid : String) = Action.async{ implicit request =>
+  def validate(uuid : String) = Action.async(parse.form(postForm)){ implicit request =>
     Tumblr.sessionTokenPair(request) match {
       case Some(credentials) => {
-        ask(postActor, PostActor.ValidatePost(credentials,UUID.fromString(uuid)))(1 seconds).mapTo[String].map(posts =>
-        {
-          Redirect("/admin").flashing("success"->"Le post a été ajouté au compte Tumblr")
+        val post = Post(UUID.fromString(uuid),request.body.title, request.body.url, request.body.author)
+        val state = current.mode match {
+            case Mode.Dev => Seq("draft")
+            case Mode.Prod => Seq("published")
+        }
+        ws.url("https://api.tumblr.com/v2/blog/prenezlapose/post")
+        .sign(OAuthCalculator(Tumblr.KEY, credentials))
+        .post(Map(
+          "type" -> Seq("text"),
+          "title" -> Seq(post.title),
+          "body" -> Seq("<img src=\""+post.url+"\"/><br />by "+post.author),
+          "state" -> Seq("draft"),
+          "native_inline_images" -> Seq("true")
+        )
+        ).map(response => {
+          if(response.status==201){
+            postActor ! PostActor.DeletePost(post.uuid)
+            Redirect("/admin").flashing("success"->"Le post a été ajouté au compte Tumblr")
+          }else if(response.status == 401){
+            Redirect("/admin").withNewSession.flashing("error"->"Login session timeout")
+          }else{
+            Redirect("/admin").flashing("error"->("Unkown error, tumblr api respond with status "+response.status))
+          }
         })
+
       }
       case _ => Future.successful(Redirect(routes.Tumblr.authenticate))
     }

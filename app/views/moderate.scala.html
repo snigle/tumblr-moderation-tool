@@ -1,25 +1,26 @@
 @(posts : List[Post])(implicit flash: Flash)
 
-@main("Propose tes gifs"){
-  @flash.get("error")
-  @flash.get("success")
-
+@main("PLPModerator"){
+<div class="moderator container">
   @if(posts.length==0){
-    Aucun post n'est en attente de modération :)
+    <h3>Aucun post n'est en attente de modération :)</h3>
   }
-  <table>
-    @for(i <- 0 to (posts.length-1)) {
-      @defining(posts(i)) { post =>
-        <tr>
-          <!-- <td>#@post.uuid</td> -->
-          <td>@post.author</td>
-          <td>@post.title</td>
-          <td><img style="max-width:500px;max-height:318px" src="@post.url" /></td>
-          <td><a href="/posts/@post.uuid/delete">X</a></td>
-          <td><a href="/posts/@post.uuid/validate">V</a></td>
-        </tr>
-      }
-    }
 
-  </table>
+    @posts.map { post =>
+      <form action="/posts/@post.uuid/validate">
+        <input class="h2" name="title" value="@post.title">
+        <div>
+          <img style="max-width:500px;max-height:318px" src="@post.url" />
+          <input type="hidden" name="url" value="@post.url">
+        </div>
+        <p>By <input name="author" value="@post.author"></p>
+        <div>
+          <a href="/posts/@post.uuid/delete" class="btn btn-danger">Refuser</a>
+          <button type="submit" class="btn btn-success">Accepter</button>
+        </div>
+        <hr />
+      </form>
+      }
+
+</div>
 }
