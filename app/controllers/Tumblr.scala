@@ -4,9 +4,13 @@ package controllers
 import play.api._
 import play.api.mvc._
 import play.api.libs.oauth._
+import play.api.libs.ws._
 import com.typesafe.config.ConfigFactory
+import scala.concurrent.Future
+import javax.inject._
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class Tumblr extends Controller{
+class Tumblr @Inject() (ws : WSClient) extends Controller{
 
 
 
@@ -29,28 +33,43 @@ class Tumblr extends Controller{
         }
         case Left(e) => throw e
       })
-  }
-}
-
-object Tumblr extends Controller {
-  val KEY = ConsumerKey(ConfigFactory.load().getString("tumblr.app.key"), ConfigFactory.load().getString("tumblr.app.secret"))
-
-  val TUMBLR = OAuth(ServiceInfo(
-    "https://www.tumblr.com/oauth/request_token",
-    "https://www.tumblr.com/oauth/access_token",
-    "https://www.tumblr.com/oauth/authorize", KEY),
-    true)
-
-
-
-
-
-  def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
-    for {
-      token <- request.session.get("token")
-      secret <- request.session.get("secret")
-    } yield {
-      RequestToken(token, secret)
     }
   }
-}
+
+  object Tumblr extends Controller {
+    val KEY = ConsumerKey(ConfigFactory.load().getString("tumblr.app.key"), ConfigFactory.load().getString("tumblr.app.secret"))
+
+    val TUMBLR = OAuth(ServiceInfo(
+      "https://www.tumblr.com/oauth/request_token",
+      "https://www.tumblr.com/oauth/access_token",
+      "https://www.tumblr.com/oauth/authorize", KEY),
+      true)
+
+
+
+
+
+      def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
+        for {
+          token <- request.session.get("token")
+          secret <- request.session.get("secret")
+        } yield {
+          RequestToken(token, secret)
+
+        }
+      }
+
+      def isAdmin(implicit request: RequestHeader, ws : WSClient) : Future[Boolean] = {
+        sessionTokenPair(request) match{
+          case Some(credentials) => {
+            ws.url("https://api.tumblr.com/v2/user/info")
+            .sign(OAuthCalculator(Tumblr.KEY, credentials))
+            .get.map(res => {
+              (res.json \ "response" \ "user" \ "name").as[String] == ConfigFactory.load().getString("tumblr.app.admin")
+            })
+          }
+          case None => Future(false)
+        }
+
+      }
+    }

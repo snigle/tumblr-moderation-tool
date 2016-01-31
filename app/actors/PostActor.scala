@@ -46,6 +46,7 @@ class PostActor(ws : WSClient) extends  PersistentActor {
     case PostActor.DeletePost(uuid) => {
       posts.value = posts.value.filterNot(p => p.uuid==uuid)
       sender ! "ok"
+      self ! "snap"
     }
     case PostActor.GetPosts => {
       sender ! posts.value
