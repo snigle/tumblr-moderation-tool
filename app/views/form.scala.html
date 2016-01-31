@@ -1,12 +1,32 @@
 @()(implicit flash: Flash)
 
 @main("Propose tes gifs"){
-  @flash.get("error")
-  @flash.get("success")
-  <form action="/posts" method="POST">
-    <input name="url" placeholder="Lien du gif"/><br />
-    <input name="title" placeholder="Petite histoire"/><br />
-    <input name="author" placeholder="Le nom de l'artiste"/><br />
-    <input type="submit" value="Envoyer !">
-  </form>
+  <div class="form">
+    <header class=""></header>
+    <form class="container form form-group col-xs-12 col-sm-12" action="/posts" method="POST" >
+      <h1 class="">Propose tes gifs</h1>
+      <p class="">Liberté d'expression ! Pas de porn stp.</p>
+      <label>
+        <h3>Lien du gif</h3>
+        <p>Une URL correcte commence par http:// et finit par .gif</p>
+        <input class="form-control" required name="url" placeholder="Lien du gif"/>
+      </label>
+      <br />
+      <label>
+        <h3>Petite histoire</h3>
+        <p>L'histoire qui va bien avec le GIF</p>
+        <input class="form-control" required name="title" placeholder="Petite histoire"/>
+      </label>
+      <br />
+      <label>
+        <h3>Pseudo</h3>
+        <p>Le nom de l'artiste</p>
+        <input class="form-control" required name="author" placeholder="Le nom de l'artiste"/>
+      </label>
+
+      <div>
+        <button class="btn btn-primary" type="submit" >Envoyer !</button>
+      </div>
+    </form>
+  </div>
 }
