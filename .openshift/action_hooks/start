@@ -6,4 +6,4 @@
 export JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
 export PATH=$JAVA_HOME/bin:$PATH
 cd /var/lib/openshift/56c438237628e107e200002b/app-root/repo/plpmoderator-1.0-SNAPSHOT
-./bin/plpmoderator -Dhttp.port=8080
+./bin/plpmoderator -Dhttp.port=8080 -Dhttp.address=$OPENSHIFT_DIY_IP
