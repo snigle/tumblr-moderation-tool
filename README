@@ -1,7 +1,7 @@
 put credentials in the conf/application.conf
 tumblr.app.key = "XXXX"
 tumblr.app.secret = "XXXX"
-tumblr.app.admin = "foo@bar.com"  
+tumblr.app.admin = "tumblr_short_name"  
 
 Build with activator : 
 activator compile
