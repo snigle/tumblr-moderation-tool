@@ -5,5 +5,7 @@
 #nohup $OPENSHIFT_REPO_DIR/diy/testrubyserver.rb $OPENSHIFT_DIY_IP $OPENSHIFT_REPO_DIR/diy |& /usr/bin/logshifter -tag diy &
 export JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
 export PATH=$JAVA_HOME/bin:$PATH
+killall java
+rm /var/lib/openshift/56c438237628e107e200002b/app-root/repo/plpmoderator-1.0-SNAPSHOT/RUNNING_PID &>/dev/null 
 cd /var/lib/openshift/56c438237628e107e200002b/app-root/repo/plpmoderator-1.0-SNAPSHOT
-./bin/plpmoderator -Dhttp.port=8080 -Dhttp.address=$OPENSHIFT_DIY_IP
+./bin/plpmoderator -Dhttp.port=8080 -Dhttp.address=$OPENSHIFT_DIY_IP &
