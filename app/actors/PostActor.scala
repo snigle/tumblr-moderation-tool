@@ -58,21 +58,4 @@ class PostActor(ws : WSClient) extends  PersistentActor {
   }
 
 
-  // val receiveRecover: Receive = {
-  //   case evt: PostActor.MessageType   => self ! evt
-  //   case SnapshotOffer(_, snapshot: List[Post]) => posts = snapshot
-  // }
-
-
-  // val receiveCommand: Receive = {
-    // case Cmd(data) =>
-    //   persist(Evt(s"${data}-${numEvents}"))(updateState)
-    //   persist(Evt(s"${data}-${numEvents + 1}")) { event =>
-    //     updateState(event)
-    //     context.system.eventStream.publish(event)
-    //   }
-  //   case "snap"  => saveSnapshot(posts)
-  //   case "print" => println(posts)
-  // }
-
 }

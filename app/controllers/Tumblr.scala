@@ -14,7 +14,7 @@ class Tumblr @Inject() (ws : WSClient) extends Controller{
 
 
 
-  def authenticate = Action { request =>
+  def authenticate = Action { implicit request =>
     request.getQueryString("oauth_verifier").map { verifier =>
       val tokenPair = Tumblr.sessionTokenPair(request).get
       // We got the verifier; now get the access token, store it and back to index
@@ -26,7 +26,7 @@ class Tumblr @Inject() (ws : WSClient) extends Controller{
         case Left(e) => throw e
       }
     }.getOrElse(
-      Tumblr.TUMBLR.retrieveRequestToken("http://localhost:9000/auth") match {
+      Tumblr.TUMBLR.retrieveRequestToken(routes.Tumblr.authenticate.absoluteURL(true)) match {
         case Right(t) => {
           // We received the unauthorized tokens in the OAuth object - store it before we proceed
           Redirect(Tumblr.TUMBLR.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
