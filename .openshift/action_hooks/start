@@ -1,0 +1,14 @@
+#!/bin/bash
+# The logic to start up your application should be put in this
+# script. The application will work only if it binds to
+# $OPENSHIFT_DIY_IP:8080
+#nohup $OPENSHIFT_REPO_DIR/diy/testrubyserver.rb $OPENSHIFT_DIY_IP $OPENSHIFT_REPO_DIR/diy |& /usr/bin/logshifter -tag diy &
+export JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
+export PATH=$JAVA_HOME/bin:$PATH
+killall java
+cd /var/lib/openshift/56c438237628e107e200002b/app-root/repo/
+./activator dist 
+cd /target/universal/
+unzip plpmoderator-1.0-SNAPSHOT.zip
+cd plpmoderator-1.0-SNAPSHOT
+./bin/plpmoderator -Dhttp.port=8080 -Dhttp.address=$OPENSHIFT_DIY_IP &
